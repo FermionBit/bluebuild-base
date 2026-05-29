@@ -8,8 +8,8 @@ These images come with batteries included and were modeled after the [Ublue Main
 
 | Recipe | Image | Versions |
 |---|---|---|
-| recipe/fedora-silverblue-latest.yml | ghcr.io/eoladil/base-images/fedora-silverblue | 44 (latest) |
-| recipe/fedora-silverblue-nvidia-latest.yml | ghcr.io/eoladil/base-images/fedora-silverblue-nvidia | 44 (latest) |
+| recipe/fedora-silverblue-latest.yml | ghcr.io/fermionbit/base-images/fedora-silverblue | 44 (latest) |
+| recipe/fedora-silverblue-nvidia-latest.yml | ghcr.io/fermionbit/base-images/fedora-silverblue-nvidia | 44 (latest) |
 
 ## Installation
 
@@ -17,7 +17,7 @@ To rebase an existing atomic Fedora installation to the latest build (using the 
 
 - First, rebase to the unsigned image to get the proper signing keys and policies installed:
   ```bash
-  bootc switch ghcr.io/eoladil/base-images/fedora-silverblue-nvidia:latest
+  bootc switch ghcr.io/fermionbit/base-images/fedora-silverblue-nvidia:latest
   ```
 - Reboot to complete the rebase:
   ```bash
@@ -25,7 +25,7 @@ To rebase an existing atomic Fedora installation to the latest build (using the 
   ```
 - Then, rebase to the signed image, like so:
   ```bash
-  bootc switch --enforce-container-sigpolicy ghcr.io/eoladil/base-images/fedora-silverblue-nvidia:latest
+  bootc switch --enforce-container-sigpolicy ghcr.io/fermionbit/base-images/fedora-silverblue-nvidia:latest
   ```
 - Reboot again to complete the installation:
   ```bash
@@ -37,7 +37,7 @@ To rebase an existing atomic Fedora installation to the latest build (using the 
 These images are signed with [Sigstore](https://www.sigstore.dev/)'s [cosign](https://github.com/sigstore/cosign). You can verify the signature by downloading the `cosign.pub` file from this repo and running the following command:
 
 ```bash
-cosign verify --key cosign.pub ghcr.io/eoladil/base-images/fedora-silverblue-nvidia:latest
+cosign verify --key cosign.pub ghcr.io/fermionbit/base-images/fedora-silverblue-nvidia:latest
 ```
 
 ## Secure Boot & MOK Keys
@@ -48,7 +48,7 @@ You can easily pull the public `.der` key and use `mokutil` to trust it by runni
 
 ```bash
 key=$(mktemp)
-curl -fsSL [https://github.com/eoladil/bluebuild-base/raw/refs/heads/main/files/base/etc/pki/akmods/certs/akmods-blue-build.der](https://github.com/eoladil/bluebuild-base/raw/refs/heads/main/files/base/etc/pki/akmods/certs/akmods-blue-build.der) -o "$key"
+curl -fsSL [https://github.com/fermionbit/bluebuild-base/raw/refs/heads/main/files/base/etc/pki/akmods/certs/akmods-blue-build.der](https://github.com/fermionbit/bluebuild-base/raw/refs/heads/main/files/base/etc/pki/akmods/certs/akmods-blue-build.der) -o "$key"
 
 # Input your own password that you will use for verifying.
 # The password is only for the user's purpose to know they are enrolling the correct key on boot.
