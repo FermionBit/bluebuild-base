@@ -48,11 +48,13 @@ You can easily pull the public `.der` key and use `mokutil` to trust it by runni
 
 ```bash
 key=$(mktemp)
-curl -fsSL [https://github.com/fermionbit/bluebuild-base/raw/refs/heads/main/files/base/etc/pki/akmods/certs/akmods-blue-build.der](https://github.com/fermionbit/bluebuild-base/raw/refs/heads/main/files/base/etc/pki/akmods/certs/akmods-blue-build.der) -o "$key"
+curl -fsSL "https://github.com/fermionbit/bluebuild-base/raw/refs/heads/main/files/base/etc/pki/akmods/certs/akmods-blue-build.der" -o "$key"
+```
 
-# Input your own password that you will use for verifying.
-# The password is only for the user's purpose to know they are enrolling the correct key on boot.
+Then input your own password that you will use for verifying.
+
+```bash
 sudo mokutil --import "$key"
 ```
 
-Then you can reboot, enroll the key via the MOK manager before the OS starts up, and enter the password you provided during the `mokutil` import. This will allow your system to securely boot with the custom-compiled NVIDIA drivers without removing any other trusted keys you currently have.
+Finally you can reboot, enroll the key via the MOK manager before the OS starts up, and enter the password you provided during the `mokutil` import. This will allow your system to securely boot with the custom-compiled NVIDIA drivers without removing any other trusted keys you currently have.
