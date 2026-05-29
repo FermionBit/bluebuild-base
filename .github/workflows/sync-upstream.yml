@@ -1,0 +1,19 @@
+name: Scheduled Upstream Sync
+
+on:
+  schedule:
+    - cron: '0 0 * * *' # Runs at 00:00 UTC every single day
+  workflow_dispatch:
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Sync upstream changes
+        uses: aormsby/Fork-Sync-With-Upstream-action@v3.4.3
+        with:
+          target_sync_branch: upstream
+          target_repo_token: ${{ secrets.GITHUB_TOKEN }}
+          upstream_sync_repo: blue-build/base-images
+          upstream_sync_branch: main
+          test_mode: false
