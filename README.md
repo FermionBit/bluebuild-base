@@ -47,11 +47,10 @@ Because this repository signs the kernel and kernel modules (like NVIDIA drivers
 You can easily pull the public `.der` key and use `mokutil` to trust it by running the following:
 
 ```bash
-key=$(mktemp)
-curl -fsSL "https://github.com/fermionbit/bluebuild-base/raw/refs/heads/main/files/base/etc/pki/akmods/certs/akmods-blue-build.der" -o "$key"
+key=$(mktemp) && curl -fsSL "https://github.com/fermionbit/bluebuild-base/raw/refs/heads/main/files/base/etc/pki/akmods/certs/akmods-blue-build.der" -o "$key"
 ```
 
-Then input your own password that you will use for verifying.
+Then input your own password that you will use for verifying:
 
 ```bash
 sudo mokutil --import "$key"
