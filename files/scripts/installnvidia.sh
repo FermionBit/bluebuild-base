@@ -35,7 +35,7 @@ curl -fLsS --retry 5 -o "/etc/yum.repos.d/${nvidia_repo}.repo" "https://negativo
 #################################
 dnf install -y --setopt=install_weak_deps=False kernel
 
-KERNEL_VERSION="$(rpm -q "kernel" --queryformat '%{VERSION}-%{RELEASE}.%{ARCH}' --latest-limit 1)"
+KERNEL_VERSION="$(rpm -q "kernel" --queryformat '%{VERSION}-%{RELEASE}.%{ARCH}' | head -1)"
 
 echo "Installing kernel-devel-matched for kernel version: ${KERNEL_VERSION}"
 
