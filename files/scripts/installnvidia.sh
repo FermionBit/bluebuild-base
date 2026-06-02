@@ -33,16 +33,12 @@ curl -fLsS --retry 5 -o "/etc/yum.repos.d/${nvidia_repo}.repo" "https://negativo
 #################################
 # Kernel module
 #################################
-# Ensure kernel is fully updated before getting its version
 dnf install -y --setopt=install_weak_deps=False kernel
 
-# Get the kernel version AFTER kernel package is installed
-# Use head -1 to get the latest version if multiple are present
-KERNEL_VERSION="$(rpm -q "kernel" --queryformat '%{VERSION}-%{RELEASE}.%{ARCH}' | head -1)"
+KERNEL_VERSION="$(rpm -q "kernel" --queryformat '%{VERSION}-%{RELEASE}.%{ARCH}' --latest-limit 1)"
 
 echo "Installing kernel-devel-matched for kernel version: ${KERNEL_VERSION}"
 
-# Install kernel-devel-matched using the full version including RELEASE
 dnf install -y --setopt=install_weak_deps=False "kernel-devel-matched-${KERNEL_VERSION%.*}"
 
 dnf install -y --setopt=install_weak_deps=False akmods gcc-c++
