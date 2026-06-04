@@ -3,10 +3,10 @@
 modules:
   - type: dnf
     cleanup: true
-      copr:
-        - ublue-os/packages
-      files:
-        - insync.repo
+    copr:
+      - ublue-os/packages
+    files:
+      - insync.repo
     install:
       exclude:
         - totem-video-thumbnailer
