@@ -63,7 +63,7 @@ modules:
           skip-unavailable: true
           packages:
             - intel-vaapi-driver
-            - libopenjph
+            - libopenjph.x86
         - repo: fedora-multimedia
           packages:
             - libva-utils
@@ -114,6 +114,7 @@ modules:
       exclude:
         - google-noto-sans-cjk-vf-fonts
         - default-fonts-cjk-sans
+        - "*.i686" # Avoid mixing up with x86 packages from repos.
 
     remove:
       auto-remove: false
