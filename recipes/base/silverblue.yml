@@ -2,11 +2,12 @@
 # yaml-language-server: $schema=https://schema.blue-build.org/module-list-v1.json
 modules:
   - type: dnf
-    cleanup: true
-    copr:
-      - ublue-os/packages
-    files:
-      - insync.repo
+    repos:
+      cleanup: true
+      copr:
+        - ublue-os/packages
+      files:
+        - insync.repo
     install:
       exclude:
         - totem-video-thumbnailer
