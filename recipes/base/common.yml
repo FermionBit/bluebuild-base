@@ -91,8 +91,8 @@ modules:
         - ublue-os/staging
         - abn/throttled
         - kylegospo/system76-scheduler
-      files:
-        - insync.repo
+      keys:
+        - https://d2t3ff60b2tol4.cloudfront.net/repomd.xml.key
     install:
       skip-unavailable: true
       packages:
@@ -118,7 +118,6 @@ modules:
         - pamu2fcfg
         - openssh-askpass
         - tailscale
-        - insync
         - lshw
         - smartmontools
         - nvtop
@@ -136,6 +135,7 @@ modules:
         - gvfs-smb
         - gvfs-nfs
         - gvfs-mtp
+        - https://cdn.insynchq.com/builds/linux/3.9.10.60041/insync-3.9.10.60041-fc44.x86_64.rpm
     
       exclude:
         - google-noto-sans-cjk-vf-fonts
