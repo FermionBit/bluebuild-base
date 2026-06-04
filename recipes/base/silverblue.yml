@@ -2,17 +2,25 @@
 # yaml-language-server: $schema=https://schema.blue-build.org/module-list-v1.json
 modules:
   - type: dnf
+    cleanup: true
+      copr:
+        - ublue-os/packages
+      files:
+        - insync.repo
     install:
       exclude:
         - totem-video-thumbnailer
         - gnome-software-rpm-ostree
       packages:
         - adw-gtk3-theme
-        - gvfs-nfs
         - ibus-unikey
         - ibus-mozc
+        - insync-nautilus
+        - bazaar
     remove:
       auto-remove: false
       packages:
         - totem-video-thumbnailer
         - gnome-software-rpm-ostree
+        - gnome-software
+        - gnome-tour

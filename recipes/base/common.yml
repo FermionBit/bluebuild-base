@@ -1,27 +1,31 @@
----
 # yaml-language-server: $schema=https://schema.blue-build.org/module-list-v1.json
 modules:
+
   - type: signing
+  
   - type: justfiles
     validate: true
     install: true
     include:
       - 30-secureboot.just
+      
   - type: files
     files:
       - source: base
         destination: /
-  - type: systemd
-    system:
-      masked:
-        - rpm-ostreed-automatic.timer
-      enabled:
-        - bootc-fetch-apply-updates.timer
-
-  # Install stuff from negativo
+      
   - type: dnf
     repos:
+      cleanup: true
       nonfree: negativo17
+      copr:
+        - ublue-os/packages
+        - ublue-os/staging
+        - abn/throttled
+        - kylegospo/system76-scheduler
+      files:
+        - insync.repo
+
     replace:
       - from-repo: fedora-multimedia
         skip-unavailable: true
@@ -35,35 +39,9 @@ modules:
           - mesa-va-drivers
           - mesa-vulkan-drivers
           - libheif
-
-  # x86_64 packages only, hence why skip-unavailable is set
-  - type: dnf
-    install:
-      packages:
-        - repo: fedora-multimedia
-          skip-unavailable: true
-          packages:
-            - intel-vaapi-driver
-    replace:
-      - from-repo: fedora-multimedia
-        skip-unavailable: true
-        packages:
           - libva-intel-media-driver
           - intel-gmmlib
           - intel-mediasdk
-          
-  - type: dnf
-    install:
-      packages:
-        - libopenjph # Manually install dependency for `libheif`, as Negativo upstreamed it
-        - repo: fedora-multimedia
-          packages:
-            - libva-utils
-            - pipewire-libs-extra
-            - heif-pixbuf-loader
-    replace:
-      - from-repo: fedora-multimedia
-        packages:
           - old: ffmpeg-free
             new: ffmpeg
           - old: libfdk-aac-free
@@ -71,98 +49,94 @@ modules:
           - old: libavcodec-free
             new: libavcodec
 
-  - type: dnf
-    install:
-      packages:
-        - repo: fedora-multimedia
-          packages:
-            - ffmpeg-libs
-
-  # Install ublue and QOL stuff
-  - type: dnf
-    repos:
-      cleanup: true
-      copr:
-        - ublue-os/packages
-        - ublue-os/staging
-    install:
-      skip-unavailable: true
-      packages:
-        - bootc
-        - ublue-os-udev-rules
-        - fedora-repos-archive
-        - zstd
-        - sbsign
-        - alsa-firmware
-        - apr
-        - apr-util
-        - distrobox
-        - ffmpegthumbnailer
-        - flatpak-spawn
-        - fuse
-        - fzf
-        - grub2-tools-extra
-        - google-noto-sans-balinese-fonts
-        - google-noto-sans-cjk-fonts
-        - google-noto-sans-javanese-fonts
-        - google-noto-sans-sundanese-fonts
-        - htop
-        - just
-        - libcamera
-        - libcamera-tools
-        - libcamera-gstreamer
-        - libcamera-ipa
-        - libimobiledevice-utils
-        - libratbag-ratbagd
-        - lshw
-        - net-tools
-        - nvme-cli
-        - nvtop
-        - openrgb-udev-rules
-        - openssl
-        - oversteer-udev
-        - pam-u2f
-        - pam_yubico
-        - pamu2fcfg
-        - pipewire-plugin-libcamera
-        - powerstat
-        - smartmontools
-        - solaar-udev
-        - squashfs-tools
-        - symlinks
-        - tcpdump
-        - tmux
-        - traceroute
-        - usbmuxd
-        - vim
-        - wireguard-tools
-        - wl-clipboard
-        - xhost
-        - xorg-x11-xauth
-        - yubikey-manager
-        - openssh-askpass
-        - gvfs-fuse
-        - gvfs-smb
-        - gvfs-nfs
-        - gvfs-mtp
-      exclude:
-        - google-noto-sans-cjk-vf-fonts
-        - default-fonts-cjk-sans
-    remove:
-      auto-remove: false
-      packages:
-        - fedora-flathub-remote
-        - fedora-third-party
-        - fedora-workstation-repositories
-    replace:
-      # mitigate upstream packaging bug: https://bugzilla.redhat.com/show_bug.cgi?id=2332429
-      # swap the incorrectly installed OpenCL-ICD-Loader for ocl-icd, the expected package
+      # Mitigate upstream packaging bug: https://bugzilla.redhat.com/show_bug.cgi?id=2332429
       - from-repo: fedora
         install-weak-deps: false
         packages:
           - new: ocl-icd
             old: OpenCL-ICD-Loader
 
+    install:
+      skip-unavailable: true
+      packages:
+        - repo: fedora-multimedia
+          skip-unavailable: true
+          packages:
+            - intel-vaapi-driver
+            - libopenjph
+        - repo: fedora-multimedia
+          packages:
+            - libva-utils
+            - pipewire-libs-extra
+            - heif-pixbuf-loader
+            - ffmpeg-libs
+            - fedora-repos-archive
+            - ublue-os-udev-rules
+            - ublue-os-media-automount-udev
+            - android-udev-rules
+            - steam-devices
+            - openrgb-udev-rules
+            - solaar-udev
+            - alsa-firmware
+            - distrobox
+            - symlinks
+            - lshw
+            - smartmontools
+            - powerstat
+            - just
+            - fzf
+            - tmux
+            - uupd
+            - wl-clipboard
+            - pam-u2f
+            - pamu2fcfg
+            - openssh-askpass
+            - gvfs-fuse
+            - gvfs-smb
+            - gvfs-nfs
+            - gvfs-mtp
+            - nvtop
+            - ffmpegthumbnailer
+            - throttled
+            - iio-sensor-proxy
+            - tailscale
+            - eza
+            - bat
+            - fuse
+            - system76-scheduler
+            - insync
+            - zenity
+            - libvrt
+            - qemu-kvm
+            - virt-manager
+            - waydroid
+
+      exclude:
+        - google-noto-sans-cjk-vf-fonts
+        - default-fonts-cjk-sans
+
+    remove:
+      auto-remove: false
+      packages:
+        - fedora-flathub-remote
+        - fedora-third-party
+        - fedora-workstation-repositories
+        - thermald
+        - toolbox
+        - firefox
+        - firefox-langpacks
+        
+  - type: systemd
+    system:
+      masked:
+        - rpm-ostreed-automatic.timer
+        - bootc-fetch-apply-updates.timer
+      enabled:
+        - bootc-fetch-apply-updates.service
+        - system76-scheduler.service
+        - tailscaled.service
+        - uupd.timer
+        
   - type: script
     env:
       CSFG: /usr/lib/systemd/system-generators/coreos-sulogin-force-generator
@@ -171,7 +145,7 @@ modules:
       # see detail: https://github.com/ublue-os/main/issues/653
       - curl -sSLo ${CSFG} https://raw.githubusercontent.com/coreos/fedora-coreos-config/refs/heads/stable/overlay.d/05core/usr/lib/systemd/system-generators/coreos-sulogin-force-generator
       - chmod +x ${CSFG}
-      # Cleanup Negativo repo 
-      - rm -f /etc/yum.repos.d/fedora-negativo17.repo
+      # Set system-wide virtual console keyboard layout to Spanish
+      - echo 'KEYMAP="es"' > /etc/vconsole.conf
     scripts:
       - install-appimage-thumbnailer.sh
