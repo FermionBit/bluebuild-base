@@ -16,8 +16,8 @@ modules:
         - adw-gtk3-theme
         - ibus-unikey
         - ibus-mozc
-        - insync-nautilus
         - bazaar
+        - https://cdn.insynchq.com/builds/linux/3.9.5.60024/insync-nautilus-3.9.5.60024-1.noarch.rpm
     remove:
       auto-remove: false
       packages:
