@@ -79,50 +79,46 @@ modules:
         - ublue-os/packages
         - ublue-os/staging
         - abn/throttled
-        - kylegospo/system76-scheduler
         
     install:
       skip-unavailable: true
       packages:
-        - uupd
-        - fedora-repos-archive
         - ublue-os-udev-rules
-        - steam-devices
-        - openrgb-udev-rules
-        - solaar-udev
+        - fedora-repos-archive
         - alsa-firmware
-        - throttled
-        - system76-scheduler
-        - iio-sensor-proxy
-        - powerstat
         - distrobox
-        - libvirt
-        - qemu-kvm
-        - virt-manager
-        - waydroid
+        - ffmpegthumbnailer
+        - fuse
+        - fzf
+        - just
+        - lshw
+        - nvtop
+        - openrgb-udev-rules
         - pam-u2f
         - pamu2fcfg
-        - openssh-askpass
-        - usbmuxd
-        - tailscale
-        - lshw
+        - powerstat
         - smartmontools
-        - nvtop
-        - fuse
-        - gvfs-fuse
+        - solaar-udev
         - symlinks
-        - just
-        - fzf
         - tmux
-        - eza
-        - bat
-        - zenity
+        - usbmuxd
         - wl-clipboard
-        - ffmpegthumbnailer
+        - openssh-askpass
+        - gvfs-fuse
         - gvfs-smb
         - gvfs-nfs
         - gvfs-mtp
-    
+        - uupd
+        - steam-devices
+        - throttled
+        - iio-sensor-proxy     
+        - libvirt
+        - qemu-kvm
+        - virt-manager
+        - waydroid  
+        - tailscale
+        - zenity
+          
       exclude:
         - google-noto-sans-cjk-vf-fonts
         - default-fonts-cjk-sans
@@ -154,7 +150,6 @@ modules:
         - bootc-fetch-apply-updates.timer
       enabled:
         - bootc-fetch-apply-updates.service
-        - system76-scheduler.service
         - tailscaled.service
         - uupd.timer
 
