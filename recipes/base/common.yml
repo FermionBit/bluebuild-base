@@ -80,8 +80,7 @@ modules:
         - ublue-os/staging
         - abn/throttled
         - kylegospo/system76-scheduler
-      keys:
-        - https://d2t3ff60b2tol4.cloudfront.net/repomd.xml.key
+        
     install:
       skip-unavailable: true
       packages:
@@ -106,6 +105,7 @@ modules:
         - pam-u2f
         - pamu2fcfg
         - openssh-askpass
+        - usbmuxd
         - tailscale
         - lshw
         - smartmontools
@@ -124,12 +124,10 @@ modules:
         - gvfs-smb
         - gvfs-nfs
         - gvfs-mtp
-        - https://cdn.insynchq.com/builds/linux/3.9.10.60041/insync-3.9.10.60041-fc44.x86_64.rpm
     
       exclude:
         - google-noto-sans-cjk-vf-fonts
         - default-fonts-cjk-sans
-        - "*.i686"
 
     remove:
       auto-remove: false
@@ -143,6 +141,8 @@ modules:
         - firefox-langpacks
 
     replace:
+      # mitigate upstream packaging bug: https://bugzilla.redhat.com/show_bug.cgi?id=2332429
+      # swap the incorrectly installed OpenCL-ICD-Loader for ocl-icd, the expected package
       - from-repo: fedora
         install-weak-deps: false
         packages:
