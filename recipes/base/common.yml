@@ -1,19 +1,31 @@
 # yaml-language-server: $schema=https://schema.blue-build.org/module-list-v1.json
 modules:
 
+  # ========================================================================
+  # 1. IMAGE CRYPTOGRAPHIC SIGNING
+  # ========================================================================
   - type: signing
   
+  # ========================================================================
+  # 2. AUTOMATION SHORTCUTS (JUSTFILES)
+  # ========================================================================
   - type: justfiles
     validate: true
     install: true
     include:
       - 30-secureboot.just
       
+  # ========================================================================
+  # 3. HOST FILE OVERLAYS
+  # ========================================================================
   - type: files
     files:
       - source: base
         destination: /
       
+  # ========================================================================
+  # 4. HOST SOFTWARE & REPOSITORIES
+  # ========================================================================
   - type: dnf
     repos:
       cleanup: true
@@ -26,6 +38,7 @@ modules:
       files:
         - insync.repo
 
+    # --- Hardware Codec & Base Driver Swaps ---
     replace:
       - from-repo: fedora-multimedia
         skip-unavailable: true
@@ -49,73 +62,77 @@ modules:
           - old: libavcodec-free
             new: libavcodec
 
-      # Mitigate upstream packaging bug: https://bugzilla.redhat.com/show_bug.cgi?id=2332429
+      # Upstream mitigation step for OpenCL mapping tracks
       - from-repo: fedora
         install-weak-deps: false
         packages:
           - new: ocl-icd
             old: OpenCL-ICD-Loader
 
+    # --- Native Software Deployment Stack ---
     install:
       skip-unavailable: true
       packages:
+        - fedora-repos-archive
+        - ublue-os-udev-rules
+        - ublue-os-media-automount-udev
+        - android-udev-rules
+        - steam-devices
+        - openrgb-udev-rules
+        - solaar-udev
+        - alsa-firmware
+        - iio-sensor-proxy
+        - distrobox
+        - throttled
+        - system76-scheduler
+        - tailscale
+        - insync
+        - smartmontools
+        - powerstat
+        - pam-u2f
+        - pamu2fcfg
+        - openssh-askpass
+        - fuse
+        - zenity
+        - libvirt
+        - qemu-kvm
+        - virt-manager
+        - waydroid
+        - symlinks
+        - lshw
+        - just
+        - fzf
+        - tmux
+        - uupd
+        - wl-clipboard
+        - gvfs-fuse
+        - gvfs-smb
+        - gvfs-nfs
+        - gvfs-mtp
+        - nvtop
+        - eza
+        - bat
+        
         - repo: fedora-multimedia
           skip-unavailable: true
           packages:
             - intel-vaapi-driver
-            - libopenjph.x86
+            - libopenjph
         - repo: fedora-multimedia
           packages:
             - libva-utils
             - pipewire-libs-extra
             - heif-pixbuf-loader
             - ffmpeg-libs
-            - fedora-repos-archive
-            - ublue-os-udev-rules
-            - ublue-os-media-automount-udev
-            - android-udev-rules
-            - steam-devices
-            - openrgb-udev-rules
-            - solaar-udev
-            - alsa-firmware
-            - distrobox
-            - symlinks
-            - lshw
-            - smartmontools
-            - powerstat
-            - just
-            - fzf
-            - tmux
-            - uupd
-            - wl-clipboard
-            - pam-u2f
-            - pamu2fcfg
-            - openssh-askpass
-            - gvfs-fuse
-            - gvfs-smb
-            - gvfs-nfs
-            - gvfs-mtp
-            - nvtop
             - ffmpegthumbnailer
-            - throttled
-            - iio-sensor-proxy
-            - tailscale
-            - eza
-            - bat
-            - fuse
-            - system76-scheduler
-            - insync
-            - zenity
-            - libvrt
-            - qemu-kvm
-            - virt-manager
-            - waydroid
 
+      # --- Redundant Fonts & Architecture Blocklist ---
       exclude:
         - google-noto-sans-cjk-vf-fonts
         - default-fonts-cjk-sans
-        - "*.i686" # Avoid mixing up with x86 packages from repos.
+        - "*.i686"
 
+    # --- Default Base Image Software Removals ---
     remove:
       auto-remove: false
       packages:
@@ -127,6 +144,9 @@ modules:
         - firefox
         - firefox-langpacks
         
+  # ========================================================================
+  # 5. SYSTEMD SERVICE & TIMER DAEMON OVERRIDES
+  # ========================================================================
   - type: systemd
     system:
       masked:
@@ -138,15 +158,15 @@ modules:
         - tailscaled.service
         - uupd.timer
         
+  # ========================================================================
+  # 6. BUILD-TIME COMPILATION SNIPPETS (SCRIPTS)
+  # ========================================================================
   - type: script
     env:
       CSFG: /usr/lib/systemd/system-generators/coreos-sulogin-force-generator
     snippets:
-      # use CoreOS' generator for emergency/rescue boot
-      # see detail: https://github.com/ublue-os/main/issues/653
       - curl -sSLo ${CSFG} https://raw.githubusercontent.com/coreos/fedora-coreos-config/refs/heads/stable/overlay.d/05core/usr/lib/systemd/system-generators/coreos-sulogin-force-generator
       - chmod +x ${CSFG}
-      # Set system-wide virtual console keyboard layout to Spanish
       - echo 'KEYMAP="es"' > /etc/vconsole.conf
     scripts:
       - install-appimage-thumbnailer.sh
