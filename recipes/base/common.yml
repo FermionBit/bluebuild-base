@@ -13,6 +13,11 @@ modules:
     files:
       - source: base
         destination: /
+
+  - type: script
+    snippets:
+      - mkdir -p /etc/dnf
+      - echo -e "[main]\nmax_parallel_downloads=20\nfastestmirror=True" >> /etc/dnf/dnf.conf
         
   - type: dnf
     repos:
@@ -83,12 +88,13 @@ modules:
     install:
       skip-unavailable: true
       packages:
+        - sbsign
         - ublue-os-udev-rules
         - fedora-repos-archive
         - alsa-firmware
         - distrobox
         - ffmpegthumbnailer
-        - fuse
+        - fuse-libs
         - fzf
         - just
         - lshw
@@ -118,6 +124,9 @@ modules:
         - waydroid  
         - tailscale
         - zenity
+        - p7zip
+        - p7zip-plugins
+        - unrar
           
       exclude:
         - google-noto-sans-cjk-vf-fonts
@@ -152,6 +161,8 @@ modules:
         - bootc-fetch-apply-updates.service
         - tailscaled.service
         - uupd.timer
+      disabled:
+        - NetworkManager-wait-online.service
 
   - type: script
     env:
