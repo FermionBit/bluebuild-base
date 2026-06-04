@@ -1,44 +1,33 @@
 # yaml-language-server: $schema=https://schema.blue-build.org/module-list-v1.json
 modules:
 
-  # ========================================================================
-  # 1. IMAGE CRYPTOGRAPHIC SIGNING
-  # ========================================================================
   - type: signing
   
-  # ========================================================================
-  # 2. AUTOMATION SHORTCUTS (JUSTFILES)
-  # ========================================================================
   - type: justfiles
     validate: true
     install: true
     include:
       - 30-secureboot.just
       
-  # ========================================================================
-  # 3. HOST FILE OVERLAYS
-  # ========================================================================
   - type: files
     files:
       - source: base
         destination: /
       
-  # ========================================================================
-  # 4. HOST SOFTWARE & REPOSITORIES
-  # ========================================================================
+  - type: systemd
+    system:
+      masked:
+        - rpm-ostreed-automatic.timer
+        - bootc-fetch-apply-updates.timer
+      enabled:
+        - bootc-fetch-apply-updates.service
+        - system76-scheduler.service
+        - tailscaled.service
+        - uupd.timer
+        
   - type: dnf
     repos:
-      cleanup: true
       nonfree: negativo17
-      copr:
-        - ublue-os/packages
-        - ublue-os/staging
-        - abn/throttled
-        - kylegospo/system76-scheduler
-      files:
-        - insync.repo
-
-    # --- Hardware Codec & Base Driver Swaps ---
     replace:
       - from-repo: fedora-multimedia
         skip-unavailable: true
@@ -52,9 +41,34 @@ modules:
           - mesa-va-drivers
           - mesa-vulkan-drivers
           - libheif
+
+  - type: dnf
+    install:
+      packages:
+        - repo: fedora-multimedia
+          skip-unavailable: true
+          packages:
+            - intel-vaapi-driver
+    replace:
+      - from-repo: fedora-multimedia
+        skip-unavailable: true
+        packages:
           - libva-intel-media-driver
           - intel-gmmlib
           - intel-mediasdk
+
+  - type: dnf
+    install:
+      packages:
+        - libopenjph
+        - repo: fedora-multimedia
+          packages:
+            - libva-utils
+            - pipewire-libs-extra
+            - heif-pixbuf-loader
+    replace:
+      - from-repo: fedora-multimedia
+        packages:
           - old: ffmpeg-free
             new: ffmpeg
           - old: libfdk-aac-free
@@ -62,17 +76,27 @@ modules:
           - old: libavcodec-free
             new: libavcodec
 
-      # Upstream mitigation step for OpenCL mapping tracks
-      - from-repo: fedora
-        install-weak-deps: false
-        packages:
-          - new: ocl-icd
-            old: OpenCL-ICD-Loader
+  - type: dnf
+    install:
+      packages:
+        - repo: fedora-multimedia
+          packages:
+            - ffmpeg-libs
 
-    # --- Native Software Deployment Stack ---
+  - type: dnf
+    repos:
+      cleanup: true
+      copr:
+        - ublue-os/packages
+        - ublue-os/staging
+        - abn/throttled
+        - kylegospo/system76-scheduler
+      files:
+        - insync.repo
     install:
       skip-unavailable: true
       packages:
+        - uupd
         - fedora-repos-archive
         - ublue-os-udev-rules
         - ublue-os-media-automount-udev
@@ -81,58 +105,43 @@ modules:
         - openrgb-udev-rules
         - solaar-udev
         - alsa-firmware
-        - iio-sensor-proxy
-        - distrobox
         - throttled
         - system76-scheduler
-        - tailscale
-        - insync
-        - smartmontools
+        - iio-sensor-proxy
         - powerstat
-        - pam-u2f
-        - pamu2fcfg
-        - openssh-askpass
-        - fuse
-        - zenity
+        - distrobox
         - libvirt
         - qemu-kvm
         - virt-manager
         - waydroid
-        - symlinks
+        - pam-u2f
+        - pamu2fcfg
+        - openssh-askpass
+        - tailscale
+        - insync
         - lshw
+        - smartmontools
+        - nvtop
+        - fuse
+        - gvfs-fuse
+        - symlinks
         - just
         - fzf
         - tmux
-        - uupd
+        - eza
+        - bat
+        - zenity
         - wl-clipboard
-        - gvfs-fuse
+        - ffmpegthumbnailer
         - gvfs-smb
         - gvfs-nfs
         - gvfs-mtp
-        - nvtop
-        - eza
-        - bat
-        
-        - repo: fedora-multimedia
-          skip-unavailable: true
-          packages:
-            - intel-vaapi-driver
-            - libopenjph
-        - repo: fedora-multimedia
-          packages:
-            - libva-utils
-            - pipewire-libs-extra
-            - heif-pixbuf-loader
-            - ffmpeg-libs
-            - ffmpegthumbnailer
-
-      # --- Redundant Fonts & Architecture Blocklist ---
+    
       exclude:
         - google-noto-sans-cjk-vf-fonts
         - default-fonts-cjk-sans
         - "*.i686"
 
-    # --- Default Base Image Software Removals ---
     remove:
       auto-remove: false
       packages:
@@ -143,30 +152,27 @@ modules:
         - toolbox
         - firefox
         - firefox-langpacks
-        
-  # ========================================================================
-  # 5. SYSTEMD SERVICE & TIMER DAEMON OVERRIDES
-  # ========================================================================
-  - type: systemd
-    system:
-      masked:
-        - rpm-ostreed-automatic.timer
-        - bootc-fetch-apply-updates.timer
-      enabled:
-        - bootc-fetch-apply-updates.service
-        - system76-scheduler.service
-        - tailscaled.service
-        - uupd.timer
-        
-  # ========================================================================
-  # 6. BUILD-TIME COMPILATION SNIPPETS (SCRIPTS)
-  # ========================================================================
+
+    replace:
+      - from-repo: fedora
+        install-weak-deps: false
+        packages:
+          - new: ocl-icd
+            old: OpenCL-ICD-Loader
+
   - type: script
     env:
       CSFG: /usr/lib/systemd/system-generators/coreos-sulogin-force-generator
+    
     snippets:
+      # Inject CoreOS generator to bypass locked recovery prompts in an emergency
       - curl -sSLo ${CSFG} https://raw.githubusercontent.com/coreos/fedora-coreos-config/refs/heads/stable/overlay.d/05core/usr/lib/systemd/system-generators/coreos-sulogin-force-generator
       - chmod +x ${CSFG}
+      
+      # Hardcode Spanish hardware layout parameters directly into virtual console
       - echo 'KEYMAP="es"' > /etc/vconsole.conf
+      
+      # Clean up the staging Negativo17 repository definition file to keep host pristine
+      - rm -f /etc/yum.repos.d/fedora-negativo17.repo
     scripts:
       - install-appimage-thumbnailer.sh
