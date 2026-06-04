@@ -8,6 +8,9 @@ modules:
         - ublue-os/packages
       files:
         - insync.repo
+      keys:
+        - https://d2t3ff60b2tol4.cloudfront.net/repomd.xml.key
+        
     install:
       exclude:
         - totem-video-thumbnailer
@@ -17,7 +20,9 @@ modules:
         - ibus-unikey
         - ibus-mozc
         - bazaar
-        - https://cdn.insynchq.com/builds/linux/3.9.5.60024/insync-nautilus-3.9.5.60024-1.noarch.rpm
+        - insync
+        - insync-nautilus
+        
     remove:
       auto-remove: false
       packages:

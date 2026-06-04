@@ -84,6 +84,7 @@ modules:
         - ublue-os/packages
         - ublue-os/staging
         - abn/throttled
+        - atim/starship
         
     install:
       skip-unavailable: true
@@ -127,6 +128,7 @@ modules:
         - p7zip
         - p7zip-plugins
         - unrar
+        - starship
           
       exclude:
         - google-noto-sans-cjk-vf-fonts
@@ -151,6 +153,10 @@ modules:
         packages:
           - new: ocl-icd
             old: OpenCL-ICD-Loader
+            
+  - type: brew
+    nofile-limits: true
+    brew-analytics: false
 
   - type: systemd
     system:
