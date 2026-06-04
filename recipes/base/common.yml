@@ -87,8 +87,6 @@ modules:
         - uupd
         - fedora-repos-archive
         - ublue-os-udev-rules
-        - ublue-os-media-automount-udev
-        - android-udev-rules
         - steam-devices
         - openrgb-udev-rules
         - solaar-udev
