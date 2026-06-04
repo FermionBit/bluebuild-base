@@ -13,17 +13,6 @@ modules:
     files:
       - source: base
         destination: /
-      
-  - type: systemd
-    system:
-      masked:
-        - rpm-ostreed-automatic.timer
-        - bootc-fetch-apply-updates.timer
-      enabled:
-        - bootc-fetch-apply-updates.service
-        - system76-scheduler.service
-        - tailscaled.service
-        - uupd.timer
         
   - type: dnf
     repos:
@@ -159,6 +148,17 @@ modules:
         packages:
           - new: ocl-icd
             old: OpenCL-ICD-Loader
+
+  - type: systemd
+    system:
+      masked:
+        - rpm-ostreed-automatic.timer
+        - bootc-fetch-apply-updates.timer
+      enabled:
+        - bootc-fetch-apply-updates.service
+        - system76-scheduler.service
+        - tailscaled.service
+        - uupd.timer
 
   - type: script
     env:
