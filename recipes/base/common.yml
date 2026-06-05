@@ -20,7 +20,7 @@ modules:
       - echo -e "[main]\nmax_parallel_downloads=20\nfastestmirror=True" >> /etc/dnf/dnf.conf
         
   - type: dnf
-    files:
+    repos:
       nonfree: negativo17
     replace:
       - from-repo: fedora-multimedia
