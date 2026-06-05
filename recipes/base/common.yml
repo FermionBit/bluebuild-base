@@ -20,7 +20,7 @@ modules:
       - echo -e "[main]\nmax_parallel_downloads=20\nfastestmirror=True" >> /etc/dnf/dnf.conf
         
   - type: dnf
-    repos:
+    files:
       nonfree: negativo17
     replace:
       - from-repo: fedora-multimedia
@@ -85,6 +85,7 @@ modules:
         - ublue-os/staging
         - abn/throttled
         - atim/starship
+        - aquacash5/nerd-fonts
         
     install:
       skip-unavailable: true
@@ -129,6 +130,7 @@ modules:
         - p7zip-plugins
         - unrar
         - starship
+        - adwaita-mono-nerd-fonts
           
       exclude:
         - google-noto-sans-cjk-vf-fonts
@@ -178,11 +180,12 @@ modules:
       # Inject CoreOS generator to bypass locked recovery prompts in an emergency
       - curl -sSLo ${CSFG} https://raw.githubusercontent.com/coreos/fedora-coreos-config/refs/heads/stable/overlay.d/05core/usr/lib/systemd/system-generators/coreos-sulogin-force-generator
       - chmod +x ${CSFG}
-      
-      # Hardcode Spanish hardware layout parameters directly into virtual console
+      #
+      # Set Keyboard layout in GRUB to Spanish
       - echo 'KEYMAP="es"' > /etc/vconsole.conf
-      
-      # Clean up the staging Negativo17 repository definition file to keep host pristine
-      - rm -f /etc/yum.repos.d/fedora-negativo17.repo
+      #
+      # Starship configuration
+      - echo 'export STARSHIP_CONFIG=/etc/starship.toml' > /etc/profile.d/starship.sh
+      - echo 'eval "$(starship init bash)"' > /etc/profile.d/starship.sh
     scripts:
       - install-appimage-thumbnailer.sh

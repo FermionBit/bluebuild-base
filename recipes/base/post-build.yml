@@ -14,3 +14,4 @@ modules:
       - signkernel.sh
     snippets:
       - rm -f /etc/yum.repos.d/fedora-negativo17.repo
+      - find /etc/yum.repos.d/ -type f ! -name "fedora*.repo" -delete
