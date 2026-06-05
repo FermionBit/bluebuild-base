@@ -6,10 +6,6 @@ modules:
       cleanup: true
       copr:
         - ublue-os/packages
-      files:
-        - insync.repo
-      keys:
-        - https://d2t3ff60b2tol4.cloudfront.net/repomd.xml.key
         
     install:
       exclude:
@@ -20,8 +16,6 @@ modules:
         - ibus-unikey
         - ibus-mozc
         - bazaar
-        - insync
-        - insync-nautilus
         
     remove:
       auto-remove: false
