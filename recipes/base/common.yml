@@ -1,24 +1,24 @@
----
 # yaml-language-server: $schema=https://schema.blue-build.org/module-list-v1.json
 modules:
+
   - type: signing
+  
   - type: justfiles
     validate: true
     install: true
     include:
       - 30-secureboot.just
+      
   - type: files
     files:
       - source: base
         destination: /
-  - type: systemd
-    system:
-      masked:
-        - rpm-ostreed-automatic.timer
-      enabled:
-        - bootc-fetch-apply-updates.timer
 
-  # Install stuff from negativo
+  - type: script
+    snippets:
+      - mkdir -p /etc/dnf
+      - echo -e "[main]\nmax_parallel_downloads=20\nfastestmirror=True" >> /etc/dnf/dnf.conf
+        
   - type: dnf
     repos:
       nonfree: negativo17
@@ -36,7 +36,6 @@ modules:
           - mesa-vulkan-drivers
           - libheif
 
-  # x86_64 packages only, hence why skip-unavailable is set
   - type: dnf
     install:
       packages:
@@ -51,11 +50,11 @@ modules:
           - libva-intel-media-driver
           - intel-gmmlib
           - intel-mediasdk
-          
+
   - type: dnf
     install:
       packages:
-        - libopenjph # Manually install dependency for `libheif`, as Negativo upstreamed it
+        - libopenjph
         - repo: fedora-multimedia
           packages:
             - libva-utils
@@ -78,82 +77,76 @@ modules:
           packages:
             - ffmpeg-libs
 
-  # Install ublue and QOL stuff
   - type: dnf
     repos:
       cleanup: true
       copr:
         - ublue-os/packages
         - ublue-os/staging
+        - abn/throttled
+        - atim/starship
+        - aquacash5/nerd-fonts
+        
     install:
       skip-unavailable: true
       packages:
-        - bootc
+        - sbsign
         - ublue-os-udev-rules
         - fedora-repos-archive
-        - zstd
-        - sbsign
         - alsa-firmware
-        - apr
-        - apr-util
         - distrobox
         - ffmpegthumbnailer
-        - flatpak-spawn
-        - fuse
+        - fuse-libs
         - fzf
-        - grub2-tools-extra
-        - google-noto-sans-balinese-fonts
-        - google-noto-sans-cjk-fonts
-        - google-noto-sans-javanese-fonts
-        - google-noto-sans-sundanese-fonts
-        - htop
         - just
-        - libcamera
-        - libcamera-tools
-        - libcamera-gstreamer
-        - libcamera-ipa
-        - libimobiledevice-utils
-        - libratbag-ratbagd
         - lshw
-        - net-tools
-        - nvme-cli
         - nvtop
         - openrgb-udev-rules
-        - openssl
-        - oversteer-udev
         - pam-u2f
-        - pam_yubico
         - pamu2fcfg
-        - pipewire-plugin-libcamera
         - powerstat
         - smartmontools
         - solaar-udev
-        - squashfs-tools
         - symlinks
-        - tcpdump
         - tmux
-        - traceroute
         - usbmuxd
-        - vim
-        - wireguard-tools
         - wl-clipboard
-        - xhost
-        - xorg-x11-xauth
-        - yubikey-manager
         - openssh-askpass
         - gvfs-fuse
         - gvfs-smb
         - gvfs-nfs
         - gvfs-mtp
+        - uupd
+        - steam-devices
+        - throttled
+        - iio-sensor-proxy     
+        - libvirt
+        - qemu-kvm
+        - virt-manager
+        - waydroid  
+        - tailscale
+        - zenity
+        - p7zip
+        - p7zip-plugins
+        - unrar
+        - starship
+        - adwaita-mono-nerd-fonts
+          
       exclude:
         - google-noto-sans-cjk-vf-fonts
         - default-fonts-cjk-sans
+
     remove:
       auto-remove: false
       packages:
         - fedora-flathub-remote
         - fedora-third-party
         - fedora-workstation-repositories
+        - thermald
+        - toolbox
+        - firefox
+        - firefox-langpacks
+
     replace:
       # mitigate upstream packaging bug: https://bugzilla.redhat.com/show_bug.cgi?id=2332429
       # swap the incorrectly installed OpenCL-ICD-Loader for ocl-icd, the expected package
@@ -162,16 +155,37 @@ modules:
         packages:
           - new: ocl-icd
             old: OpenCL-ICD-Loader
+            
+  - type: brew
+    nofile-limits: true
+    brew-analytics: false
+
+  - type: systemd
+    system:
+      masked:
+        - rpm-ostreed-automatic.timer
+        - bootc-fetch-apply-updates.timer
+      enabled:
+        - bootc-fetch-apply-updates.service
+        - tailscaled.service
+        - uupd.timer
+      disabled:
+        - NetworkManager-wait-online.service
 
   - type: script
     env:
       CSFG: /usr/lib/systemd/system-generators/coreos-sulogin-force-generator
+    
     snippets:
-      # use CoreOS' generator for emergency/rescue boot
-      # see detail: https://github.com/ublue-os/main/issues/653
+      # Inject CoreOS generator to bypass locked recovery prompts in an emergency
       - curl -sSLo ${CSFG} https://raw.githubusercontent.com/coreos/fedora-coreos-config/refs/heads/stable/overlay.d/05core/usr/lib/systemd/system-generators/coreos-sulogin-force-generator
       - chmod +x ${CSFG}
-      # Cleanup Negativo repo 
-      - rm -f /etc/yum.repos.d/fedora-negativo17.repo
+      #
+      # Set Keyboard layout in GRUB to Spanish
+      - echo 'KEYMAP="es"' > /etc/vconsole.conf
+      #
+      # Starship configuration
+      - echo 'export STARSHIP_CONFIG=/etc/starship.toml' > /etc/profile.d/starship.sh
+      - echo 'eval "$(starship init bash)"' > /etc/profile.d/starship.sh
     scripts:
       - install-appimage-thumbnailer.sh
