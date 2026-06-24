@@ -2,11 +2,6 @@
 # yaml-language-server: $schema=https://schema.blue-build.org/module-list-v1.json
 modules:
   - type: dnf
-    repos:
-      cleanup: true
-      copr:
-        - ublue-os/packages
-        
     install:
       exclude:
         - totem-video-thumbnailer
@@ -15,8 +10,7 @@ modules:
         - adw-gtk3-theme
         - ibus-unikey
         - ibus-mozc
-        - bazaar
-        
+
     remove:
       auto-remove: false
       packages:

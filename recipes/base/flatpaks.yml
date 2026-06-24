@@ -1,0 +1,17 @@
+---
+# yaml-language-server: $schema=https://schema.blue-build.org/module-list-v1.json
+- type: default-flatpaks
+  configurations:
+    - scope: user
+      repo:
+        title: Flathub (user)
+    - notify: true
+      scope: system
+      repo:
+        title: Flathub (system)
+      install:
+        - io.github.kolunmi.Bazaar
+        - com.github.tchx84.Flatseal
+        - com.ranfdev.DistroShelf
+        - org.virt_manager.virt-manager
+        - org.mozilla.firefox

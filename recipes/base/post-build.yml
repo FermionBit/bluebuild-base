@@ -7,7 +7,7 @@ modules:
     secrets:
       - type: file
         source: ./MOK.priv
-        mount: 
+        mount:
           type: file
           destination: /tmp/certs/private_key.priv
     scripts:
@@ -15,3 +15,7 @@ modules:
     snippets:
       - rm -f /etc/yum.repos.d/fedora-negativo17.repo
       - find /etc/yum.repos.d/ -type f ! -name "fedora*.repo" -delete
+
+  - type: initramfs
+    env:
+      DRACUT_NO_XATTR: '1'

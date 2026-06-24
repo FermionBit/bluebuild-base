@@ -12,5 +12,5 @@ modules:
   - from-file: base/nvidia.yml
   - type: os-release
     properties:
-      PRETTY_NAME: Glacier OS
+      PRETTY_NAME: BlueBuild OS
   - from-file: base/post-build.yml

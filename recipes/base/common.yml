@@ -2,13 +2,13 @@
 modules:
 
   - type: signing
-  
+
   - type: justfiles
     validate: true
     install: true
     include:
       - 30-secureboot.just
-      
+
   - type: files
     files:
       - source: base
@@ -18,7 +18,7 @@ modules:
     snippets:
       - mkdir -p /etc/dnf
       - echo -e "[main]\nmax_parallel_downloads=20\nfastestmirror=True" >> /etc/dnf/dnf.conf
-        
+
   - type: dnf
     repos:
       nonfree: negativo17
@@ -83,10 +83,11 @@ modules:
       copr:
         - ublue-os/packages
         - ublue-os/staging
+        - bieszczaders/kernel-cachyos-addons
         - abn/throttled
         - atim/starship
         - aquacash5/nerd-fonts
-        
+
     install:
       skip-unavailable: true
       packages:
@@ -118,12 +119,13 @@ modules:
         - gvfs-mtp
         - uupd
         - steam-devices
+        - gamescope
         - throttled
-        - iio-sensor-proxy     
+        - iio-sensor-proxy
         - libvirt
         - qemu-kvm
         - virt-manager
-        - waydroid  
+        - waydroid
         - tailscale
         - zenity
         - p7zip
@@ -131,7 +133,7 @@ modules:
         - unrar
         - starship
         - adwaita-mono-nerd-fonts
-          
+
       exclude:
         - google-noto-sans-cjk-vf-fonts
         - default-fonts-cjk-sans
@@ -155,7 +157,7 @@ modules:
         packages:
           - new: ocl-icd
             old: OpenCL-ICD-Loader
-            
+
   - type: brew
     nofile-limits: true
     brew-analytics: false
@@ -175,7 +177,7 @@ modules:
   - type: script
     env:
       CSFG: /usr/lib/systemd/system-generators/coreos-sulogin-force-generator
-    
+
     snippets:
       # Inject CoreOS generator to bypass locked recovery prompts in an emergency
       - curl -sSLo ${CSFG} https://raw.githubusercontent.com/coreos/fedora-coreos-config/refs/heads/stable/overlay.d/05core/usr/lib/systemd/system-generators/coreos-sulogin-force-generator
