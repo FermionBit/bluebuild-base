@@ -1,6 +1,6 @@
-# BlueBuild Silverblue Images
+# Custom Silverblue Images
 
-This repository contains custom base images built with the BlueBuild CLI. Forked from the official [BlueBuild Base Images](https://github.com/blue-build/base-images), this repository exclusively builds the latest Fedora Silverblue images with closed-sourced [NVIDIA drivers](https://negativo17.org/nvidia-driver/). 
+Forked from the official [BlueBuild Base Images](https://github.com/blue-build/base-images), this repository exclusively builds the latest Fedora Silverblue images with closed-sourced [NVIDIA drivers](https://negativo17.org/nvidia-driver/) using [BlueBuild's CLI](https://github.com/blue-build/cli). 
 
 These come with [virtualization](https://virt-manager.org/) and [undervolting](https://github.com/throttled/throttled) support, along with other goodies modeled after the [Ublue Main Images](https://github.com/ublue-os/main).
 
