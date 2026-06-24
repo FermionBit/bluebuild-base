@@ -1,14 +1,13 @@
 # BlueBuild Silverblue Images
 
-This repository contains custom base images built with the BlueBuild CLI. Forked from the official [BlueBuild Base Images](https://github.com/blue-build/base-images), this repository exclusively builds the latest Fedora Silverblue images, including support for closed-source NVIDIA drivers. 
+This repository contains custom base images built with the BlueBuild CLI. Forked from the official [BlueBuild Base Images](https://github.com/blue-build/base-images), this repository exclusively builds the latest Fedora Silverblue images with closed-sourced NVIDIA drivers. 
 
-These images come with batteries included and were modeled after the [Ublue Main Images](https://github.com/ublue-os/main).
+These images come with virtualization and undervolting support, along with other goodies modeled after the [Ublue Main Images](https://github.com/ublue-os/main).
 
 ## Images
 
-| Recipe | Image | Versions |
+| Recipe | Image | Version |
 |---|---|---|
-| recipe/fedora-silverblue-latest.yml | ghcr.io/fermionbit/base-images/fedora-silverblue | 44 (latest) |
 | recipe/fedora-silverblue-nvidia-latest.yml | ghcr.io/fermionbit/base-images/fedora-silverblue-nvidia | 44 (latest) |
 
 ## Installation
