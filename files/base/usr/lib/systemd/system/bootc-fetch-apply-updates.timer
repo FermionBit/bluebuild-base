@@ -9,6 +9,7 @@ OnBootSec=1h
 OnUnitInactiveSec=8h
 # When deploying a large number of systems, it may be beneficial to increase this value to help with load on the registry.
 RandomizedDelaySec=2h
+Persistent=true
 
 [Install]
 WantedBy=timers.target
